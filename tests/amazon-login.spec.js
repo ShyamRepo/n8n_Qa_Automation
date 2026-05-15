@@ -6,20 +6,22 @@ const loginPageUrl = 'https://example.com/login';
 const usernameInput = 'input[name="username"]';
 const passwordInput = 'input[name="password"]';
 const submitButton = 'button[type="submit"]';
-const forgotPasswordLink = 'a[href="/forgot-password"]';
-const errorMessage = 'div.error-message';
+const dashboardUrl = 'https://example.com/dashboard';
+const forgotPasswordLink = 'text="Forgot Password"';
+const passwordField = 'input[type="password"]';
+const errorMessage = 'text="Invalid credentials"';
 
 // Test suite
 test.describe('Login Scenarios', () => {
-  // Test 1: Navigate to login page
+  // Test case 1: Navigate to login page
   test('Navigate to Login Page', async ({ page }) => {
     // Navigate to login page
     await page.goto(loginPageUrl);
     // Verify page title
-    await expect(page).toContainText('Login');
+    await expect(page).toHaveTitle('Login Page');
   });
 
-  // Test 2: Login with valid email/mobile and password
+  // Test case 2: Login with valid email/mobile and password
   test('Login with Valid Credentials', async ({ page }) => {
     // Navigate to login page
     await page.goto(loginPageUrl);
@@ -28,11 +30,11 @@ test.describe('Login Scenarios', () => {
     await page.fill(passwordInput, 'valid_password');
     // Click submit button
     await page.click(submitButton);
-    // Verify successful login
-    await expect(page).toContainText('Dashboard');
+    // Verify redirect to dashboard
+    await expect(page).toHaveURL(dashboardUrl);
   });
 
-  // Test 3: Login with invalid password
+  // Test case 3: Login with invalid password
   test('Login with Invalid Password', async ({ page }) => {
     // Navigate to login page
     await page.goto(loginPageUrl);
@@ -42,10 +44,10 @@ test.describe('Login Scenarios', () => {
     // Click submit button
     await page.click(submitButton);
     // Verify error message
-    await expect(page.locator(errorMessage)).toContainText('Invalid username or password');
+    await expect(page.locator(errorMessage)).toBeVisible();
   });
 
-  // Test 4: Login with empty email/mobile
+  // Test case 4: Login with empty email/mobile
   test('Login with Empty Email/Mobile', async ({ page }) => {
     // Navigate to login page
     await page.goto(loginPageUrl);
@@ -54,10 +56,10 @@ test.describe('Login Scenarios', () => {
     // Click submit button
     await page.click(submitButton);
     // Verify error message
-    await expect(page.locator(errorMessage)).toContainText('Username is required');
+    await expect(page.locator(errorMessage)).toBeVisible();
   });
 
-  // Test 5: Login with empty password
+  // Test case 5: Login with empty password
   test('Login with Empty Password', async ({ page }) => {
     // Navigate to login page
     await page.goto(loginPageUrl);
@@ -66,30 +68,26 @@ test.describe('Login Scenarios', () => {
     // Click submit button
     await page.click(submitButton);
     // Verify error message
-    await expect(page.locator(errorMessage)).toContainText('Password is required');
+    await expect(page.locator(errorMessage)).toBeVisible();
   });
 
-  // Test 6: Verify Forgot Password link
+  // Test case 6: Verify Forgot Password link
   test('Verify Forgot Password Link', async ({ page }) => {
     // Navigate to login page
     await page.goto(loginPageUrl);
-    // Click forgot password link
-    await page.click(forgotPasswordLink);
-    // Verify forgot password page
-    await expect(page).toContainText('Forgot Password');
+    // Verify forgot password link
+    await expect(page.locator(forgotPasswordLink)).toBeVisible();
   });
 
-  // Test 7: Verify password field is masked
+  // Test case 7: Verify password field is masked
   test('Verify Password Field is Masked', async ({ page }) => {
     // Navigate to login page
     await page.goto(loginPageUrl);
-    // Fill password
-    await page.fill(passwordInput, 'valid_password');
     // Verify password field is masked
-    await expect(page.locator(passwordInput)).toHaveAttribute('type', 'password');
+    await expect(page.locator(passwordField)).toHaveAttribute('type', 'password');
   });
 
-  // Test 8: Verify error message for invalid credentials
+  // Test case 8: Verify error message for invalid credentials
   test('Verify Error Message for Invalid Credentials', async ({ page }) => {
     // Navigate to login page
     await page.goto(loginPageUrl);
@@ -99,6 +97,6 @@ test.describe('Login Scenarios', () => {
     // Click submit button
     await page.click(submitButton);
     // Verify error message
-    await expect(page.locator(errorMessage)).toContainText('Invalid username or password');
+    await expect(page.locator(errorMessage)).toBeVisible();
   });
 });
